@@ -273,31 +273,31 @@ public class ScoreData
 public class GameManager : MonoBehaviour
 {
     public Transform player;  // 參考玩家的 Transform
-public void SaveGame()
-    {
-        GameData data = new GameData();
-        data.sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        data.playerPosition = player.position;
-        BinaryFormatter formatter = new BinaryFormatter();
-        string path = Application.persistentDataPath + "/savefile.dat";
-        FileStream stream = new FileStream(path, FileMode.Create);
-        formatter.Serialize(stream, data);
-        stream.Close();
+// public void SaveGame()
+//     {
+//         GameData data = new GameData();
+//         data.sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+//         data.playerPosition = player.position;
+//         BinaryFormatter formatter = new BinaryFormatter();
+//         string path = Application.persistentDataPath + "/savefile.dat";
+//         FileStream stream = new FileStream(path, FileMode.Create);
+//         formatter.Serialize(stream, data);
+//         stream.Close();
 
-        Debug.Log("遊戲已存檔");
-    }
-     public void LoadGame()
-    {
-        string path = Application.persistentDataPath + "/savefile.dat";
-        if (File.Exists(path))
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(path, FileMode.Open);
-            GameData data = formatter.Deserialize(stream) as GameData;
-            stream.Close();
-            UnityEngine.SceneManagement.SceneManager.LoadScene(data.sceneName);
-            player.position = data.playerPosition;
-            Debug.Log("遊戲已讀檔");
-        }
-    }
+//         Debug.Log("遊戲已存檔");
+//     }
+    //  public void LoadGame()
+    // {
+    //     string path = Application.persistentDataPath + "/savefile.dat";
+    //     if (File.Exists(path))
+    //     {
+    //         BinaryFormatter formatter = new BinaryFormatter();
+    //         FileStream stream = new FileStream(path, FileMode.Open);
+    //         GameData data = formatter.Deserialize(stream) as GameData;
+    //         stream.Close();
+    //         UnityEngine.SceneManagement.SceneManager.LoadScene(data.sceneName);
+    //         player.position = data.playerPosition;
+    //         Debug.Log("遊戲已讀檔");
+    //     }
+    // }
 }
