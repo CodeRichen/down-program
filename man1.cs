@@ -193,7 +193,7 @@ public class man1 : MonoBehaviour
                 float tims = (timee - 2) / 4;
                 float ttims = (Time.timeScale - 1) / 4;
                 StartCoroutine(LoopWithDelay(3, tims, ttims)); // 傳入所需參數
-                gameManager.SaveGame();
+
             }
         }
     }
@@ -230,8 +230,7 @@ public class man1 : MonoBehaviour
     {
         Time.timeScale = 1f;
         hp = 10;
-        // SceneManager.LoadScene("SampleScene");
-        gameManager.LoadGame();
+        SceneManager.LoadScene("SampleScene");
     }
 
     void SaveScore(int score)
@@ -269,35 +268,4 @@ public class man1 : MonoBehaviour
 public class ScoreData
 {
     public List<int> scores;
-}
-public class GameManager : MonoBehaviour
-{
-    public Transform player;  // 參考玩家的 Transform
-// public void SaveGame()
-//     {
-//         GameData data = new GameData();
-//         data.sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-//         data.playerPosition = player.position;
-//         BinaryFormatter formatter = new BinaryFormatter();
-//         string path = Application.persistentDataPath + "/savefile.dat";
-//         FileStream stream = new FileStream(path, FileMode.Create);
-//         formatter.Serialize(stream, data);
-//         stream.Close();
-
-//         Debug.Log("遊戲已存檔");
-//     }
-    //  public void LoadGame()
-    // {
-    //     string path = Application.persistentDataPath + "/savefile.dat";
-    //     if (File.Exists(path))
-    //     {
-    //         BinaryFormatter formatter = new BinaryFormatter();
-    //         FileStream stream = new FileStream(path, FileMode.Open);
-    //         GameData data = formatter.Deserialize(stream) as GameData;
-    //         stream.Close();
-    //         UnityEngine.SceneManagement.SceneManager.LoadScene(data.sceneName);
-    //         player.position = data.playerPosition;
-    //         Debug.Log("遊戲已讀檔");
-    //     }
-    // }
 }
