@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.EventSystems;
 public class man1 : MonoBehaviour
 {
     GameObject currentfloor;
@@ -24,7 +25,7 @@ public class man1 : MonoBehaviour
     [SerializeField] GameObject back;
     public string hurt3;
     public string hurt2;
-    public GameManager gameManager;
+    public string Player;
     float hurtime;
     void Start()
     {
@@ -34,6 +35,10 @@ public class man1 : MonoBehaviour
         timee = 2f;
         filePath = Path.Combine(Application.persistentDataPath, "scores.json");
         LoadScores();
+        if (replay != null)
+        {
+            EventSystem.current.SetSelectedGameObject(replay);
+        }
     }
 
     void Update()
@@ -54,6 +59,15 @@ public class man1 : MonoBehaviour
         {
             GetComponent<Animator>().SetBool("move", false);
         }
+         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // 如果按下Space，選中replay按鈕
+            Button currentButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+                if (currentButton != null)
+                {
+                    currentButton.onClick.Invoke();
+                }
+        }
         updatescore();
         if(10<score && score<=15)
         {
@@ -69,6 +83,7 @@ public class man1 : MonoBehaviour
             if (r==0){
                 StartCoroutine(MoveOverTime(objTransform,new Vector3(-0.5f, 0, 0), 1));}
             else {
+              
                 StartCoroutine(MoveOverTime(objTransform2, new Vector3(0.5f, 0, 0), 1));}
             }
     }
@@ -144,6 +159,7 @@ public class man1 : MonoBehaviour
         if (other.gameObject.tag == "death")
         {
             die();
+            
         }
     }
 
@@ -158,6 +174,7 @@ public class man1 : MonoBehaviour
         {
             hp = 0;
             die();
+
         }
         updatehp();
     }
@@ -190,9 +207,9 @@ public class man1 : MonoBehaviour
             
              if (score % 5 == 1 && score > 5)
             {
-                float tims = (timee - 2) / 4;
-                float ttims = (Time.timeScale - 1) / 4;
-                StartCoroutine(LoopWithDelay(3, tims, ttims)); // 傳入所需參數
+                float tims = (timee - 2) / 4f;
+                float ttims = (Time.timeScale - 1) / 4f;
+                StartCoroutine(LoopWithDelay(4, tims, ttims)); // 傳入所需參數
 
             }
         }
@@ -200,11 +217,19 @@ public class man1 : MonoBehaviour
 
     IEnumerator LoopWithDelay(int iterations, float tims, float ttims)
     {
+        
+        if (iterations==4){
         for (int t = 0; t < iterations; t++)
         {
             timee -= tims;
             Time.timeScale -= ttims;
-            yield return new WaitForSeconds(1f); // 每秒延遲
+            yield return new WaitForSeconds(0.5f); // 每秒延遲
+        }
+        }
+        if (iterations==2){
+            timee += tims;
+            Time.timeScale += ttims;
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -228,10 +253,23 @@ public class man1 : MonoBehaviour
 
     public void Replay()
     {
-        Time.timeScale = 1f;
-        hp = 10;
-        SceneManager.LoadScene("SampleScene");
-    }
+        hp = 5;
+        score=score-((score-1)%5);
+        replay.SetActive(false);
+        back.SetActive(false);
+        scoreText2.gameObject.SetActive(false);
+        scoreText3.gameObject.SetActive(false);
+        GameObject obj3 = GameObject.Find("man1");
+        obj3.transform.position = new Vector3(0, 3, 0);
+        scoretime = 0;
+        scoreText.text = "地下" + score.ToString() + "層";
+        timee=1;
+        Time.timeScale=0.1f;
+        float tims = ((2+(0.1f*score/5f))-timee) / 2f;
+        StartCoroutine(LoopWithDelay(2, tims, ttims)); // 傳入所需參數
+
+        }
+    
 
     void SaveScore(int score)
     {
