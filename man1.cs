@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+
 public class man1 : MonoBehaviour
 {
     GameObject currentfloor;
@@ -19,12 +20,21 @@ public class man1 : MonoBehaviour
     [SerializeField] Text scoreText2;
     [SerializeField] Text scoreText3;
     float scoretime;
-    public int score;
+    public  int score;
     [SerializeField] GameObject replay;
     [SerializeField] GameObject back;
     public string hurt3;
     public string hurt2;
-    public GameManager gameManager;
+void Awake()
+    {
+         if (FindObjectsOfType<man1>().Length > 1)
+    {
+        Destroy(gameObject);  // 如果已經有一個實例存在，銷毀當前物件
+        return;
+    }
+    
+    DontDestroyOnLoad(gameObject);  // 確保此物件在場景切換時不被銷毀
+    }
     float hurtime;
     void Start()
     {
@@ -209,22 +219,25 @@ public class man1 : MonoBehaviour
     }
 
     void die()
+{
+    GetComponent<AudioSource>().Play();
+    Time.timeScale = 0; // 遊戲速度
+    replay.SetActive(true);
+    back.SetActive(true);
+    scoreText2.text = "本次紀錄\n地下" + score.ToString() + "層";
+    SaveScore(score);
+    scoreText2.gameObject.SetActive(true);
+    List<int> scores = LoadScores();
+    scoreText3.text = ""; // 清空之前的文本
+    for (int i = 0; i < scores.Count; i++)
     {
-        GetComponent<AudioSource>().Play();
-        Time.timeScale = 0; // 遊戲速度
-        replay.SetActive(true);
-        back.SetActive(true);
-        scoreText2.text = "本次紀錄\n地下" + score.ToString() + "層";
-        SaveScore(score);
-        scoreText2.gameObject.SetActive(true);
-        List<int> scores = LoadScores();
-        scoreText3.text = ""; // 清空之前的文本
-        for (int i = 0; i < scores.Count; i++)
-        {
-            scoreText3.text += "第"+(i + 1) + "名: 地下" + scores[i] + "層\n";
-        }
-        scoreText3.gameObject.SetActive(true);
+        scoreText3.text += "第" + (i + 1) + "名: 地下" + scores[i] + "層\n";
     }
+    scoreText3.gameObject.SetActive(true);
+    
+    // 可能在這裡停止進一步的代碼執行
+    enabled = false;
+}
 
     public void Replay()
     {
