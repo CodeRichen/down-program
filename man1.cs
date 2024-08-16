@@ -63,7 +63,7 @@ public class man1 : MonoBehaviour
         {
             // 如果按下Space，選中replay按鈕
             Button currentButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-                if (currentButton != null)
+                if (currentButton != null && scoreText2.gameObject.activeSelf)
                 {
                     currentButton.onClick.Invoke();
                 }
@@ -202,12 +202,11 @@ public class man1 : MonoBehaviour
             score++;
             scoretime = 0;
             scoreText.text = "地下" + score.ToString() + "層";
-            Time.timeScale += 0.05f; 
-            timee += 0.7f;
-            
+            Time.timeScale += 0.02f; 
+            timee += 1f;
              if (score % 5 == 1 && score > 5)
             {
-                float tims = (timee - 2) / 4f;
+                float tims = (timee - 3) / 4f;
                 float ttims = (Time.timeScale - 1) / 4f;
                 StartCoroutine(LoopWithDelay(4, tims, ttims)); // 傳入所需參數
 
@@ -227,9 +226,12 @@ public class man1 : MonoBehaviour
         }
         }
         if (iterations==2){
+            for (int t = 0; t < iterations; t++)
+        {
             timee += tims;
             Time.timeScale += ttims;
             yield return new WaitForSeconds(0.5f);
+        }
         }
     }
 
@@ -265,7 +267,8 @@ public class man1 : MonoBehaviour
         scoreText.text = "地下" + score.ToString() + "層";
         timee=1;
         Time.timeScale=0.1f;
-        float tims = ((2+(0.1f*score/5f))-timee) / 2f;
+        float tims = 2/2f;
+        float ttims = (0.9f)/2;
         StartCoroutine(LoopWithDelay(2, tims, ttims)); // 傳入所需參數
 
         }
