@@ -27,6 +27,8 @@ public class man1 : MonoBehaviour
     public string hurt2;
     public string Player;
     float hurtime;
+    private bool isCollided = false;
+    
     void Start()
     {
         hp = 15;
@@ -35,6 +37,7 @@ public class man1 : MonoBehaviour
         timee = 2f;
         filePath = Path.Combine(Application.persistentDataPath, "scores.json");
         LoadScores();
+        
         if (replay != null)
         {
             EventSystem.current.SetSelectedGameObject(replay);
@@ -42,7 +45,7 @@ public class man1 : MonoBehaviour
     }
 
     void Update()
-    {
+    {AudioListener.pause = true;
         if (Input.GetKey(KeyCode.D))
         {
             transform.Translate(Rmove * Time.deltaTime, 0, 0);
@@ -126,6 +129,7 @@ public class man1 : MonoBehaviour
                 currentfloor = other.gameObject;
                 Modifyhp(1);
                 other.gameObject.GetComponent<AudioSource>().Play();
+                isCollided = true;
             }
         }
         else if (other.gameObject.tag == "floor2")
@@ -136,6 +140,7 @@ public class man1 : MonoBehaviour
                 Modifyhp(-1);
                 GetComponent<Animator>().SetTrigger("hurt");
                 other.gameObject.GetComponent<AudioSource>().Play();
+                isCollided = true;
             }
         }
         else if (other.gameObject.tag == "hurt" || other.gameObject.tag == "hurt2" || other.gameObject.tag == "hurt3")
@@ -230,7 +235,13 @@ public class man1 : MonoBehaviour
         {
             timee += tims;
             Time.timeScale += ttims;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
+            if (isCollided == true){
+                isCollided = false;
+                timee=3;
+                Time.timeScale=1;
+                break;
+            }
         }
         }
     }

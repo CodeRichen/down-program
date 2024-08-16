@@ -12,41 +12,45 @@ public class floormanager : MonoBehaviour
     {
         int r = Random.Range(0, floor.Length);
         GameObject floort = Instantiate(floor[r], transform);
-        if(0<=man2.score && man2.score<=10)
-        {
-        floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5f, 0);
-        }
-        if(5<man2.score && man2.score<=10)
-        {
-            int r2 = Random.Range(0, 3);
-            if (r2 == 0) StartCoroutine(RotateFloor(floort));
-            else if (r2 == 1) StartCoroutine(MoveFloor(floort));
-            else if (r2 == 2) StartCoroutine(MoveFloor2(floort));
-        }
-        if(10<man2.score && man2.score<=15)
-        {
-            floort.transform.position = new Vector3(0, -5f, 0);
+        // if((0<=man2.score && man2.score<=10))
+        // {
+        // floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5f, 0);
+        // }
+        // if(5<man2.score && man2.score<=10)
+        // {
+        //     int r2 = Random.Range(0, 3);
+        //     if (r2 == 0) StartCoroutine(RotateFloor(floort));
+        //     else if (r2 == 1) StartCoroutine(MoveFloor(floort));
+        //     else if (r2 == 2) StartCoroutine(MoveFloor2(floort));
+        // }
+        // if(10<man2.score && man2.score<=15)
+        // {
+        //     floort.transform.position = new Vector3(0, -5f, 0);
 
 
-        }
-        if(15<man2.score && man2.score<=20)
+        // }
+        // if(15<man2.score && man2.score<=20)
+        // {
+        //     floort.transform.position = new Vector3(Random.Range(0, 6f), -5f, 0);
+        //     floort.transform.Rotate(0, 0, 20, Space.Self);
+        // }
+        // if(20<man2.score && man2.score<=25)
+        // {
+        //     int r2 = Random.Range(0, 2);
+        //     if (r2 == 0) 
+        //     {                
+        //     floort.transform.position = new Vector3(Random.Range(0, 6f), -5f, 0);
+        //     floort.transform.Rotate(0, 0, 25, Space.Self);
+        //     }
+        //     else if (r2 == 1) 
+        //     {                
+        //     floort.transform.position = new Vector3(Random.Range(-6f,0), -5f, 0);
+        //     floort.transform.Rotate(0, 0, -25, Space.Self);
+        //     }
+        // }
+        // if (25<=man2.score && man2.score<=35)
         {
-            floort.transform.position = new Vector3(Random.Range(0, 6f), -5f, 0);
-            floort.transform.Rotate(0, 0, 20, Space.Self);
-        }
-        if(20<man2.score && man2.score<=25)
-        {
-            int r2 = Random.Range(0, 2);
-            if (r2 == 0) 
-            {                
-            floort.transform.position = new Vector3(Random.Range(0, 6f), -5f, 0);
-            floort.transform.Rotate(0, 0, 25, Space.Self);
-            }
-            else if (r2 == 1) 
-            {                
-            floort.transform.position = new Vector3(Random.Range(-6f,0), -5f, 0);
-            floort.transform.Rotate(0, 0, -25, Space.Self);
-            }
+            floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5f, 0);
         }
     }
      IEnumerator MoveFloor2(GameObject floort){
