@@ -6,9 +6,9 @@ public class floor1 : MonoBehaviour
 {
     public man1 man2;
     private float scoretime;
-    private float checkInterval = 0.5f; // 檢查的時間間隔
-    private float timeSinceLastCheck = 0f;
-
+    private float spawnInterval = 1f; // 呼叫 SpawnFloor 的間隔時間
+    private float duration = 4f; // 持續時間
+    private int can;
     void Start()
     {
         man2 = FindObjectOfType<man1>();
@@ -19,47 +19,56 @@ public class floor1 : MonoBehaviour
         scoretime += Time.deltaTime;  
         transform.Translate(0, man2.timee * Time.deltaTime, 0);
         
-        // 如果得分小於 25，並且位置超過 5f 則刪除該物件
-        // if (man2.score < 25 && transform.position.y > 5f)
+        // if (transform.position.y > 5f && man2.score%5!=1)
         // {
         //     Destroy(gameObject);
         //     transform.parent.GetComponent<floormanager>().SpawnFloor();
         // }
-
-        // 每 0.5 秒檢查一次
-        timeSinceLastCheck += Time.deltaTime;
-        if (timeSinceLastCheck >= checkInterval)
-        {
-            CheckAndMaintainFloorLimit();
-            timeSinceLastCheck = 0f;
+        if (man2.score%5==1 && man2.score>can){
+            can=man2.score;
+            StartCoroutine(AutoSpawnFloors());
         }
+       
     }
-
-    void CheckAndMaintainFloorLimit()
+    IEnumerator AutoSpawnFloors()
     {
-        // 找到所有的 floor1 物件
-        floor1[] allFloors = FindObjectsOfType<floor1>();
-        
-        // 如果總數超過8，刪除Y軸上位置最大的floor1物件
-        if (allFloors.Length ==8)
+        Debug.Log(1);
+        float elapsedTime = 0f;
+         while (elapsedTime < duration)
         {
-            Debug.Log(allFloors.Length);
-            floor1 highestFloor = allFloors[0];
-            foreach (floor1 floor in allFloors)
-            {
-                if (floor.transform.position.y > highestFloor.transform.position.y)
-                {
-                    highestFloor = floor;
-                }
+            yield return new WaitForSeconds(spawnInterval); 
+            
+            if (transform.position.y > 5f){
+                // DestroyHighestPlatform();
+            transform.parent.GetComponent<floormanager>().SpawnFloor();
             }
-            StartCoroutine(DestroyAfterDelay(highestFloor.gameObject, 0.5f));
+            
+            elapsedTime += Time.deltaTime;
+            
+            
         }
     }
-
-    IEnumerator DestroyAfterDelay(GameObject obj, float delay)
+    private void DestroyHighestPlatform()
     {
-        yield return new WaitForSeconds(delay);
-        Destroy(obj);
-        transform.parent.GetComponent<floormanager>().SpawnFloor();
+        // 找到 Y 軸位置最大的物件
+        GameObject highestPlatform = null;
+        float maxY = float.MinValue;
+
+        foreach (Transform child in transform)
+        {
+            if (child.position.y > maxY)
+            {
+                maxY = child.position.y;
+                highestPlatform = child.gameObject;
+            }
+        }
+
+        // 如果找到物件，則刪除
+        if (highestPlatform != null)
+        {
+            Destroy(highestPlatform);
+        }
     }
 }
+
+
