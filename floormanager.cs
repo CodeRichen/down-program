@@ -56,7 +56,7 @@ public class floormanager : MonoBehaviour
     }
     public void SpawnFloor2()
     {
-        for(int leen=0; leen>-6;leen--)
+        for(int leen=0; leen>-8;leen--)
         {
         int r = Random.Range(0, floor.Length);
         GameObject floort = Instantiate(floor[r], transform);

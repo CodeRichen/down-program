@@ -28,7 +28,7 @@ public class man1 : MonoBehaviour
     public string Player;
     float hurtime;
     private bool isCollided = false;
-    public floor1 floor2;
+    public int can;
     
     void Start()
     {
@@ -263,16 +263,15 @@ public class man1 : MonoBehaviour
             scoreText3.text += "第"+(i + 1) + "名: 地下" + scores[i] + "層\n";
         }
         scoreText3.gameObject.SetActive(true);
+        if(score%5==1){
+            can=1;
+        }
     }
 
     public void Replay()
     {
+        
         hp = 5;
-         if (score%5==1){
-            Debug.Log(floor2.can);
-        // floor2.can=0;
-        Debug.Log(floor2.can);
-        }
         score=score-((score-1)%5);
         replay.SetActive(false);
         back.SetActive(false);
