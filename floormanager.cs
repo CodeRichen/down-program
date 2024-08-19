@@ -7,6 +7,7 @@ public class floormanager : MonoBehaviour
     [SerializeField] GameObject[] floor; 
     public man1 man2;
     public float floortposition;
+    public int can2;
     private List<GameObject> spawnedFloors = new List<GameObject>();
     public void SpawnFloor()
     {
@@ -61,9 +62,16 @@ public class floormanager : MonoBehaviour
         int r = Random.Range(0, floor.Length);
         GameObject floort = Instantiate(floor[r], transform);
         floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5.2f+leen*1.3f, 0);
-        
         }
+        StartCoroutine(LoopWithDelay());
     }
+    IEnumerator LoopWithDelay()
+    {
+
+        yield return new WaitForSeconds(4.6f); // 每秒延遲
+        can2=1;
+
+        }
      IEnumerator MoveFloor2(GameObject floort){
         float moveDuration = man2.score/(6f);
         for (float t = 0; t < moveDuration/2; t += Time.deltaTime)

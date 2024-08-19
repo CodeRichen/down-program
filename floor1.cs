@@ -8,13 +8,12 @@ public class floor1 : MonoBehaviour
     public floormanager floormanager2;
     private float scoretime;
     public int can;
-    public int can2;
     
     void Start()
     {
-        man2 = FindObjectOfType<man1>();
+        man2 = FindObjectOfType<man1>(); //自動匹配
+        floormanager2 = FindObjectOfType<floormanager>();
         can=man2.score;
-        can2=0;
     }
 
     void Update()
@@ -22,7 +21,7 @@ public class floor1 : MonoBehaviour
 
         scoretime += Time.deltaTime;  
         transform.Translate(0, man2.timee * Time.deltaTime, 0);
-        if (transform.position.y > 5f && can2==1)
+        if (transform.position.y > 5f && floormanager2.can2==1)
         {
 
             transform.parent.GetComponent<floormanager>().SpawnFloor();
@@ -33,8 +32,6 @@ public class floor1 : MonoBehaviour
             transform.parent.GetComponent<floormanager>().SpawnFloor2();
             can=man2.score;
             man2.can=0;
-            can2=0;
-            StartCoroutine(LoopWithDelay());
         }
         }
 
@@ -43,11 +40,5 @@ public class floor1 : MonoBehaviour
             Destroy(gameObject);
     }
 }
-IEnumerator LoopWithDelay()
-    {
 
-        yield return new WaitForSeconds(4f); // 每秒延遲
-        can2=1;
-
-        }
 }
