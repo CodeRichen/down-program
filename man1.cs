@@ -28,6 +28,7 @@ public class man1 : MonoBehaviour
     public string Player;
     float hurtime;
     private bool isCollided = false;
+    public floor1 floor2;
     
     void Start()
     {
@@ -267,6 +268,11 @@ public class man1 : MonoBehaviour
     public void Replay()
     {
         hp = 5;
+         if (score%5==1){
+            Debug.Log(floor2.can);
+        // floor2.can=0;
+        Debug.Log(floor2.can);
+        }
         score=score-((score-1)%5);
         replay.SetActive(false);
         back.SetActive(false);
@@ -281,7 +287,7 @@ public class man1 : MonoBehaviour
         float tims = 2/2f;
         float ttims = (0.9f)/2;
         StartCoroutine(LoopWithDelay(2, tims, ttims)); // 傳入所需參數
-
+       
         }
     
 

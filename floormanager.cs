@@ -61,6 +61,7 @@ public class floormanager : MonoBehaviour
         int r = Random.Range(0, floor.Length);
         GameObject floort = Instantiate(floor[r], transform);
         floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5.2f+leen*1.3f, 0);
+        
         }
     }
      IEnumerator MoveFloor2(GameObject floort){
