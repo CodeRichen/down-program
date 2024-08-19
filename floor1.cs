@@ -22,7 +22,6 @@ public class floor1 : MonoBehaviour
 
         scoretime += Time.deltaTime;  
         transform.Translate(0, man2.timee * Time.deltaTime, 0);
-        
         if (transform.position.y > 5f && can2==1)
         {
 
@@ -46,8 +45,9 @@ public class floor1 : MonoBehaviour
 }
 IEnumerator LoopWithDelay()
     {
+
         yield return new WaitForSeconds(4f); // 每秒延遲
         can2=1;
+
         }
 }
-
