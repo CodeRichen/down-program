@@ -57,7 +57,6 @@ public class floormanager : MonoBehaviour
         GameObject floort = Instantiate(floor[r], transform);
         floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5.2f+leen*1.3f, 0);
         }
-        StartCoroutine(LoopWithDelay());
     }
      IEnumerator MoveFloor2(GameObject floort){
         float moveDuration = man2.score/(6f);

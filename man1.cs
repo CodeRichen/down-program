@@ -59,6 +59,35 @@ public class man1 : MonoBehaviour
         {
             GetComponent<Animator>().SetBool("move", false);
         }
+        // 如果有手機觸碰事件
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            // if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
+            {
+                Vector2 touchPosition = touch.position;
+
+                if (touchPosition.x < Screen.width / 2)
+                {
+                    // 向左移動
+                    transform.Translate(Lmove * Time.deltaTime, 0, 0);
+            GetComponent<SpriteRenderer>().flipX = true;
+            GetComponent<Animator>().SetBool("move", true);
+                }
+                else if (touchPosition.x >= Screen.width / 2)
+                {
+                    // 向右移動
+                   transform.Translate(Rmove * Time.deltaTime, 0, 0);
+            GetComponent<SpriteRenderer>().flipX = false;
+            GetComponent<Animator>().SetBool("move", true);
+                }
+                else
+        {
+            GetComponent<Animator>().SetBool("move", false);
+        }
+            }
+        }
          if (Input.GetKeyDown(KeyCode.Space))
         {
             // 如果按下Space，選中replay按鈕
