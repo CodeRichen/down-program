@@ -30,6 +30,7 @@ public class man1 : MonoBehaviour
     public int can;
     void Start()
     {
+        can=1;
         hp = 15;
         score = 1;
         scoretime = 0;
@@ -116,7 +117,7 @@ public class man1 : MonoBehaviour
                 StartCoroutine(MoveOverTime(objTransform2, new Vector3(0.5f, 0, 0), 1));}
             }
     }
-          if(score%5==1){
+          if(score%5==0){
             can=1;
         }
     }
