@@ -118,9 +118,19 @@ public class man1 : MonoBehaviour
             }
     }
           if(score%5==0){
-            can=1;
+            StartCoroutine(CanDelay(4));
         }
     }
+
+    private IEnumerator CanDelay(int a)
+    {
+        yield return new WaitForSeconds(a);
+        can=2;  
+         Debug.Log("CAN = " + can);
+        yield return new WaitForSeconds(0.1f);
+        can=1; 
+         Debug.Log("CAN = " + can);
+        }
  IEnumerator MoveOverTime(Transform obj, Vector3 endPos, float time)
     {
         Vector3 startPos = obj.position;
@@ -186,16 +196,14 @@ public class man1 : MonoBehaviour
             Modifyhp(-1);
             other.gameObject.GetComponent<AudioSource>().Play();
         }
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "death")
+        else if (other.gameObject.tag == "death")
         {
             die();
             
         }
     }
+
+
 
     public void Modifyhp(int num)
     {
@@ -271,6 +279,7 @@ public class man1 : MonoBehaviour
 
     void die()
     {
+        StartCoroutine(CanDelay(0));
         GetComponent<AudioSource>().Play();
         Time.timeScale = 0; // 遊戲速度
         replay.SetActive(true);

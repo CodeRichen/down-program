@@ -17,7 +17,6 @@ public class floor1 : MonoBehaviour
     {   
         
         man2=FindObjectOfType<man1>();
-
             scoretime += Time.deltaTime;  
         transform.Translate(0, man2.timee * Time.deltaTime, 0);
         // if (transform.position.y > 5f && man2.score<=25)
@@ -32,8 +31,8 @@ public class floor1 : MonoBehaviour
             man2.can=0;
  
         }
-    
-       if (transform.position.y > 5f )
+        
+    if (transform.position.y > 5f || (man2.can==2 && transform.position.y<-5f))
         {
             Destroy(gameObject);
     }
