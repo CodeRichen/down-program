@@ -27,6 +27,7 @@ public class man1 : MonoBehaviour
     public string hurt2;
     public string Player;
     float hurtime;
+    public int can;
     void Start()
     {
         hp = 15;
@@ -63,7 +64,6 @@ public class man1 : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-
             // if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
             {
                 Vector2 touchPosition = touch.position;
@@ -116,6 +116,9 @@ public class man1 : MonoBehaviour
                 StartCoroutine(MoveOverTime(objTransform2, new Vector3(0.5f, 0, 0), 1));}
             }
     }
+          if(score%5==1){
+            can=1;
+        }
     }
  IEnumerator MoveOverTime(Transform obj, Vector3 endPos, float time)
     {
