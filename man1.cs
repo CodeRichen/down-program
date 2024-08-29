@@ -171,7 +171,8 @@ public class man1 : MonoBehaviour
                 other.gameObject.GetComponent<AudioSource>().Play();
             }
         }
-        else if (other.gameObject.tag == "hurt" || other.gameObject.tag == "hurt2" || other.gameObject.tag == "hurt3")
+        else if (other.gameObject.tag == "hurt" || other.gameObject.tag == "hurt2" 
+        || other.gameObject.tag == "hurt3" )
         {
             if (currentfloor != null)
             {
@@ -196,7 +197,7 @@ public class man1 : MonoBehaviour
         }
     }
 
-    void Modifyhp(int num)
+    public void Modifyhp(int num)
     {
         hp += num;
         if (hp > 20)
