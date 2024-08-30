@@ -16,18 +16,18 @@ public class RandomLineGenerator : MonoBehaviour
     private GameObject[] currentLines = new GameObject[1000]; 
     private int a;
     public man1 man2;
+
     void Start()
     {
-       
+        // 初始设置
     }
     
     public void StartGeneratingLines()
     {
-            a=0;
-            linesPerSecond = 1; 
-            isGenerating = true;
-            lineCoroutine = StartCoroutine(GenerateRandomLines());
-        
+        a = 0;
+        linesPerSecond = 1; 
+        isGenerating = true;
+        lineCoroutine = StartCoroutine(GenerateRandomLines());
     }
 
     public void StopGeneratingLines()
@@ -45,11 +45,9 @@ public class RandomLineGenerator : MonoBehaviour
 
     private IEnumerator GenerateRandomLines()
     {
-
-        
         while (isGenerating)
         {
-            linesPerSecond=1+man2.score-0;
+            linesPerSecond = 1 + man2.score;
 
             // 每秒生成多条线条
             for (int i = 0; i < linesPerSecond; i++)
@@ -98,6 +96,7 @@ public class RandomLineGenerator : MonoBehaviour
         // 创建并设置第二条线
         currentLines[a] = CreateLine(startPoint2, endPoint2);
         a++;
+        
         // 0.3秒后在两条线的中间生成一条线并删除之前的两条线
         StartCoroutine(GenerateMiddleLine(startPoint1, endPoint1, startPoint2, endPoint2));
     }
@@ -107,11 +106,9 @@ public class RandomLineGenerator : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         // 删除两条原始线条
-
         foreach (GameObject line in currentLines)
         {
             Destroy(line);
-            
         }
 
         // 计算中间线的起点和终点（两条线的中点）
@@ -141,7 +138,7 @@ public class RandomLineGenerator : MonoBehaviour
         LineRenderer redLineRenderer = redLineObject.AddComponent<LineRenderer>();
         redLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         redLineRenderer.startColor = Color.red;
-                redLineRenderer.endColor = Color.red;
+        redLineRenderer.endColor = Color.red;
         redLineRenderer.positionCount = 2;
         redLineRenderer.SetPosition(0, middleStart);
         redLineRenderer.SetPosition(1, middleEnd);
@@ -197,13 +194,18 @@ public class LineCollisionHandler : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            man1 man = other.GetComponent<man1>();
-            if (man != null)
+            LineRenderer lineRenderer = GetComponent<LineRenderer>();
+            
+            // 检查线条的颜色是否为红色
+            if (lineRenderer != null && lineRenderer.startColor == Color.red && lineRenderer.endColor == Color.red)
             {
-                man.Modifyhp(-1); 
-                
+                man1 man = other.GetComponent<man1>();
+                if (man != null)
+                {
+                    Debug.Log(1);
+                    man.Modifyhp(-1);  // 扣除玩家的生命值
+                }
             }
         }
     }
 }
-
