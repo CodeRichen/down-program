@@ -28,6 +28,7 @@ public class man1 : MonoBehaviour
     public string Player;
     float hurtime;
     public int can;
+    
     void Start()
     {
         can=1;
@@ -117,20 +118,18 @@ public class man1 : MonoBehaviour
                 StartCoroutine(MoveOverTime(objTransform2, new Vector3(0.5f, 0, 0), 1));}
             }
     }
-          if(score%5==0){
-            StartCoroutine(CanDelay(4));
+        if(3==score){
+           Time.timeScale =  0.7f;
+        }
+        if(4==score){
+           Time.timeScale =  0.5f;
+        }
+        if(5==score){
+           Time.timeScale =  0.3f;
         }
     }
 
-    private IEnumerator CanDelay(int a)
-    {
-        yield return new WaitForSeconds(a);
-        can=2;  
-         Debug.Log("CAN = " + can);
-        yield return new WaitForSeconds(0.1f);
-        can=1; 
-         Debug.Log("CAN = " + can);
-        }
+    
  IEnumerator MoveOverTime(Transform obj, Vector3 endPos, float time)
     {
         Vector3 startPos = obj.position;
@@ -279,7 +278,6 @@ public class man1 : MonoBehaviour
 
     void die()
     {
-        StartCoroutine(CanDelay(0));
         GetComponent<AudioSource>().Play();
         Time.timeScale = 0; // 遊戲速度
         replay.SetActive(true);

@@ -6,8 +6,8 @@ public class floormanager : MonoBehaviour
 {
     [SerializeField] GameObject[] floor; 
     public man1 man2;
-    public RandomLineGenerator lineGenerator;
     private List<GameObject> spawnedFloors = new List<GameObject>();
+    public RandomLineGenerator lineGenerator;
     public void SpawnFloor()
     {
         int r = Random.Range(0, floor.Length);
@@ -51,16 +51,17 @@ public class floormanager : MonoBehaviour
     }
         public void SpawnFloor2()
     {
-        for(int leen=0; leen>-100;leen--)
+      
+        for(int leen=0; leen>-300;leen--)
         {
         int r = Random.Range(0, floor.Length);
         GameObject floort = Instantiate(floor[r], transform);
         floort.transform.position = new Vector3(Random.Range(-3f, 3f), -5.2f+leen*1.3f, 0);
         }
-                   if (lineGenerator != null)
-        {
+            
             lineGenerator.StartGeneratingLines();
-        }
+     
+  
     }
      IEnumerator MoveFloor2(GameObject floort){
         float moveDuration = man2.score/(6f);

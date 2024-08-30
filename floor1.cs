@@ -31,8 +31,8 @@ public class floor1 : MonoBehaviour
             man2.can=0;
  
         }
-        
-    if (transform.position.y > 5f || (man2.can==2 && transform.position.y<-5f))
+
+    if (transform.position.y > 5f )
         {
             Destroy(gameObject);
     }

@@ -7,14 +7,15 @@ public class RandomLineGenerator : MonoBehaviour
     public float areaHeight = 10f; // 区域高度
     public float lineLength = 18f; // 线的长度
     public float lineDuration = 1f; // 线显示的持续时间
-    public float increaseInterval = 5f; // 增加线条数量的时间间隔
+    public float increaseInterval = 4.5f; // 增加线条数量的时间间隔
     public float lineOffset = 0.1f;  // 旁边线条的偏移距离
     private float nextTimeToIncrease = 0f; // 下一次增加线条数量的时间
     private int linesPerSecond = 1; // 每秒生成的初始线条数量
     private bool isGenerating = false; // 是否正在生成线条
     private Coroutine lineCoroutine; // 用于控制生成线条的协程
-    private GameObject[] currentLines = new GameObject[100]; 
+    private GameObject[] currentLines = new GameObject[1000]; 
     private int a;
+    public man1 man2;
     void Start()
     {
        
@@ -22,7 +23,7 @@ public class RandomLineGenerator : MonoBehaviour
     
     public void StartGeneratingLines()
     {
-
+            a=0;
             linesPerSecond = 1; 
             isGenerating = true;
             lineCoroutine = StartCoroutine(GenerateRandomLines());
@@ -44,29 +45,21 @@ public class RandomLineGenerator : MonoBehaviour
 
     private IEnumerator GenerateRandomLines()
     {
-        float startTime = Time.time;
+
         
         while (isGenerating)
         {
-            // Debug.Log(linesPerSecond );
-            // Debug.Log(Time.time - startTime);
+            linesPerSecond=1+man2.score-0;
+
             // 每秒生成多条线条
             for (int i = 0; i < linesPerSecond; i++)
             {
                 GenerateLineSequence();
             }
 
-            // 随着时间推移增加线条数量
-            if (Time.time >= nextTimeToIncrease)
+            if (man2.score >= 5)
             {
-                linesPerSecond++; // 增加每秒生成的线条数量
-                nextTimeToIncrease = Time.time + increaseInterval; // 更新下一次增加时间
-            }
-
-            // 检查时间是否超过25秒
-            if (Time.time - startTime >= 25f)
-            {
-                StopGeneratingLines(); // 25秒后停止生成线条
+                StopGeneratingLines(); 
             }
 
             // 每3秒生成一次
