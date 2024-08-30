@@ -46,7 +46,7 @@ public class RandomLineGenerator : MonoBehaviour
     {
         while (isGenerating)
         {
-            linesPerSecond = 1 + man2.score;
+            linesPerSecond = 1 + man2.score-25;
 
             // 每秒生成多条线条
             for (int i = 0; i < linesPerSecond; i++)
@@ -54,7 +54,7 @@ public class RandomLineGenerator : MonoBehaviour
                 GenerateLineSequence();
             }
 
-            if (man2.score >= 5)
+            if (man2.score == 30)
             {
                 StopGeneratingLines(); 
             }

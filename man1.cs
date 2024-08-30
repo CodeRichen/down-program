@@ -119,13 +119,13 @@ public class man1 : MonoBehaviour
                 StartCoroutine(MoveOverTime(objTransform2, new Vector3(0.5f, 0, 0), 1));}
             }
     }
-        if(3==score){
+        if(25+3==score){
            Time.timeScale =  0.7f;
         }
-        if(4==score){
+        if(25+4==score){
            Time.timeScale =  0.5f;
         }
-        if(5==score){
+        if(25+5==score){
            Time.timeScale =  0.3f;
         }
     }
@@ -208,7 +208,9 @@ public class man1 : MonoBehaviour
 {
     if (other.gameObject.tag == "RedObject") 
         {
+            GetComponent<Animator>().SetTrigger("hurt");
             Modifyhp(-1); 
+            other.gameObject.GetComponent<AudioSource>().Play();
         }
 }
     public void Modifyhp(int num)
