@@ -100,8 +100,7 @@ public class RandomLineGenerator : MonoBehaviour
         // 0.3秒后在两条线的中间生成一条线并删除之前的两条线
         StartCoroutine(GenerateMiddleLine(startPoint1, endPoint1, startPoint2, endPoint2));
     }
-
-    private IEnumerator GenerateMiddleLine(Vector3 startPoint1, Vector3 endPoint1, Vector3 startPoint2, Vector3 endPoint2)
+ private IEnumerator GenerateMiddleLine(Vector3 startPoint1, Vector3 endPoint1, Vector3 startPoint2, Vector3 endPoint2)
     {
         yield return new WaitForSeconds(0.3f);
 
@@ -119,55 +118,126 @@ public class RandomLineGenerator : MonoBehaviour
         GameObject middleLine = CreateLine(middleStart, middleEnd);
 
         // 0.3秒后在中间线的上方生成一条较粗的红色线，并删除中间线
-        StartCoroutine(GenerateRedLine(middleLine));
+        // StartCoroutine(GenerateRedLine(middleLine));
+        StartCoroutine(GenerateRedObject(middleLine));
     }
+private IEnumerator GenerateRedObject(GameObject middleLine)
+{
+    yield return new WaitForSeconds(0.3f);
+
+    // 获取中间线的起点和终点
+    Vector3 middleStart = middleLine.GetComponent<LineRenderer>().GetPosition(0);
+    Vector3 middleEnd = middleLine.GetComponent<LineRenderer>().GetPosition(1);
+
+    // 删除白色的中间线
+    Destroy(middleLine);
+
+    // 创建一个红色物体用于碰撞检测
+    GameObject redObject = new GameObject("RedObject");
+
+    // 设置红色物体的位置在起点和终点的中间
+    redObject.transform.position = (middleStart + middleEnd) / 2;
+
+    // 添加 BoxCollider2D 和 Rigidbody2D 组件
+    BoxCollider2D collider = redObject.AddComponent<BoxCollider2D>();
+    collider.isTrigger = true;  // 设置为触发器
+    Rigidbody2D rb = redObject.AddComponent<Rigidbody2D>();
+    rb.bodyType = RigidbodyType2D.Kinematic;  // Kinematic 让物体不受物理力的影响
+
+    // 计算方向向量并设置物体的旋转方向
+    Vector3 direction = (middleEnd - middleStart).normalized;
+    redObject.transform.right = direction;
+
+    // 设置红色物体的尺寸（宽度为原来的半宽，长度与线的长度相同）
+    float objectWidth = 0.075f;  // 修改物体宽度
+    float objectHeight = Vector3.Distance(middleStart, middleEnd);  // 与线长度一致
+    collider.size = new Vector2(objectHeight, objectWidth);  // 设置碰撞器尺寸
+
+    // 添加 SpriteRenderer 并设置红色材质
+    SpriteRenderer renderer = redObject.AddComponent<SpriteRenderer>();
+    renderer.color = Color.red;
+    renderer.sortingOrder = 10; // 确保红色物体在其他物体前面渲染
+
+    // 创建一个更大的 Texture2D 来渲染红色物体
+    renderer.sprite = GenerateSprite((int)(objectHeight * 100), (int)(objectWidth * 100)); // 缩放因子为100
+
+    // 持续0.5秒后销毁红色物体
+    yield return new WaitForSeconds(0.5f);
+    Destroy(redObject);
+}
+
+// 创建一个更大的红色 Sprite
+private Sprite GenerateSprite(int width, int height)
+{
+    Texture2D texture = new Texture2D(width, height);
+
+    // 填充纹理为红色
+    Color[] colors = new Color[width * height];
+    for (int i = 0; i < colors.Length; i++)
+    {
+        colors[i] = Color.red;
+    }
+    texture.SetPixels(colors);
+    texture.Apply();
+
+    Rect rect = new Rect(0, 0, width, height);
+    Vector2 pivot = new Vector2(0.5f, 0.5f);
+
+    return Sprite.Create(texture, rect, pivot);
+}
 
     private IEnumerator GenerateRedLine(GameObject middleLine)
+{
+    yield return new WaitForSeconds(0.3f);
+
+    // 获取中间线的起点和终点
+    Vector3 middleStart = middleLine.GetComponent<LineRenderer>().GetPosition(0);
+    Vector3 middleEnd = middleLine.GetComponent<LineRenderer>().GetPosition(1);
+
+    // 删除白色的中间线
+    Destroy(middleLine);
+
+    // 创建一个较粗的红色线条并添加动画效果
+    GameObject redLineObject = new GameObject("RedLine");
+    LineRenderer redLineRenderer = redLineObject.AddComponent<LineRenderer>();
+    redLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+    redLineRenderer.startColor = Color.red;
+    redLineRenderer.endColor = Color.red;
+    redLineRenderer.positionCount = 2;
+    redLineRenderer.SetPosition(0, middleStart);
+    redLineRenderer.SetPosition(1, middleEnd);
+    redLineRenderer.startWidth = 0.05f; 
+    redLineRenderer.endWidth = 0.05f; 
+
+    // 动画效果：从中间开始慢慢扩展
+    float animationDuration = 0.5f; // 动画持续时间
+    float targetWidth = 0.3f; 
+    float elapsedTime = 0f;
+
+    while (elapsedTime < animationDuration)
     {
-        yield return new WaitForSeconds(0.3f);
-
-        // 获取中间线的起点和终点
-        Vector3 middleStart = middleLine.GetComponent<LineRenderer>().GetPosition(0);
-        Vector3 middleEnd = middleLine.GetComponent<LineRenderer>().GetPosition(1);
-
-        // 删除白色的中间线
-        Destroy(middleLine);
-
-        // 创建一个较粗的红色线条并添加动画效果
-        GameObject redLineObject = new GameObject("RedLine");
-        LineRenderer redLineRenderer = redLineObject.AddComponent<LineRenderer>();
-        redLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        redLineRenderer.startColor = Color.red;
-        redLineRenderer.endColor = Color.red;
-        redLineRenderer.positionCount = 2;
-        redLineRenderer.SetPosition(0, middleStart);
-        redLineRenderer.SetPosition(1, middleEnd);
-        redLineRenderer.startWidth = 0.05f; 
-        redLineRenderer.endWidth = 0.05f; 
-
-        // 动画效果：从中间开始慢慢扩展
-        float animationDuration = 0.5f; // 动画持续时间
-        float targetWidth = 0.3f; 
-        float elapsedTime = 0f;
-
-        while (elapsedTime < animationDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float width = Mathf.Lerp(0.05f, targetWidth, elapsedTime / animationDuration);
-            redLineRenderer.startWidth = width;
-            redLineRenderer.endWidth = width;
-            yield return null;
-        }
-
-        // 添加碰撞检测以减少man的生命值
-        BoxCollider2D collider = redLineObject.AddComponent<BoxCollider2D>();
-        collider.isTrigger = true;  // 设置为触发器
-        redLineObject.AddComponent<LineCollisionHandler>(); // 添加碰撞处理脚本
-
-        // 持续0.5秒后销毁红线
-        yield return new WaitForSeconds(0.5f);
-        Destroy(redLineObject);
+        elapsedTime += Time.deltaTime;
+        float width = Mathf.Lerp(0.05f, targetWidth, elapsedTime / animationDuration);
+        redLineRenderer.startWidth = width;
+        redLineRenderer.endWidth = width;
+        yield return null;
     }
+
+
+    // 将碰撞盒的大小调整为与红线的长度和宽度匹配
+    Vector2 lineCenter = (middleStart + middleEnd) / 2f;
+    redLineObject.transform.position = lineCenter;
+    float lineLength = Vector3.Distance(middleStart, middleEnd);
+    collider.size = new Vector2(lineLength, targetWidth);
+
+
+
+    // 持续0.5秒后销毁红线
+    yield return new WaitForSeconds(0.5f);
+    Destroy(redLineObject);
+}
+
+
 
     private GameObject CreateLine(Vector3 startPoint, Vector3 endPoint)
     {
@@ -187,25 +257,6 @@ public class RandomLineGenerator : MonoBehaviour
     }
 }
 
-// 创建一个新脚本LineCollisionHandler来检测碰撞
-public class LineCollisionHandler : MonoBehaviour
-{
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            LineRenderer lineRenderer = GetComponent<LineRenderer>();
-            
-            // 检查线条的颜色是否为红色
-            if (lineRenderer != null && lineRenderer.startColor == Color.red && lineRenderer.endColor == Color.red)
-            {
-                man1 man = other.GetComponent<man1>();
-                if (man != null)
-                {
-                    Debug.Log(1);
-                    man.Modifyhp(-1);  // 扣除玩家的生命值
-                }
-            }
-        }
-    }
-}
+
+
+

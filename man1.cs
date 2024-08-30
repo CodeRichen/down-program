@@ -200,6 +200,10 @@ public class man1 : MonoBehaviour
             die();
             
         }
+         if (other.gameObject.name.Contains("RedObject"))  // 使用名称检查是否为红色物体
+        {
+            Modifyhp(-1);  // 碰到红色物体时减少hp
+        }
     }
 
 
