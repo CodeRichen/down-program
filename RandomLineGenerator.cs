@@ -9,7 +9,6 @@ public class RandomLineGenerator : MonoBehaviour
     public float lineDuration = 1f; // 线显示的持续时间
     public float increaseInterval = 4.5f; // 增加线条数量的时间间隔
     public float lineOffset = 0.1f;  // 旁边线条的偏移距离
-    private float nextTimeToIncrease = 0f; // 下一次增加线条数量的时间
     private int linesPerSecond = 1; // 每秒生成的初始线条数量
     private bool isGenerating = false; // 是否正在生成线条
     private Coroutine lineCoroutine; // 用于控制生成线条的协程
@@ -118,73 +117,8 @@ public class RandomLineGenerator : MonoBehaviour
         GameObject middleLine = CreateLine(middleStart, middleEnd);
 
         // 0.3秒后在中间线的上方生成一条较粗的红色线，并删除中间线
-        // StartCoroutine(GenerateRedLine(middleLine));
-        StartCoroutine(GenerateRedObject(middleLine));
+        StartCoroutine(GenerateRedLine(middleLine));
     }
-private IEnumerator GenerateRedObject(GameObject middleLine)
-{
-    yield return new WaitForSeconds(0.3f);
-
-    // 获取中间线的起点和终点
-    Vector3 middleStart = middleLine.GetComponent<LineRenderer>().GetPosition(0);
-    Vector3 middleEnd = middleLine.GetComponent<LineRenderer>().GetPosition(1);
-
-    // 删除白色的中间线
-    Destroy(middleLine);
-
-    // 创建一个红色物体用于碰撞检测
-    GameObject redObject = new GameObject("RedObject");
-
-    // 设置红色物体的位置在起点和终点的中间
-    redObject.transform.position = (middleStart + middleEnd) / 2;
-
-    // 添加 BoxCollider2D 和 Rigidbody2D 组件
-    BoxCollider2D collider = redObject.AddComponent<BoxCollider2D>();
-    collider.isTrigger = true;  // 设置为触发器
-    Rigidbody2D rb = redObject.AddComponent<Rigidbody2D>();
-    rb.bodyType = RigidbodyType2D.Kinematic;  // Kinematic 让物体不受物理力的影响
-
-    // 计算方向向量并设置物体的旋转方向
-    Vector3 direction = (middleEnd - middleStart).normalized;
-    redObject.transform.right = direction;
-
-    // 设置红色物体的尺寸（宽度为原来的半宽，长度与线的长度相同）
-    float objectWidth = 0.075f;  // 修改物体宽度
-    float objectHeight = Vector3.Distance(middleStart, middleEnd);  // 与线长度一致
-    collider.size = new Vector2(objectHeight, objectWidth);  // 设置碰撞器尺寸
-
-    // 添加 SpriteRenderer 并设置红色材质
-    SpriteRenderer renderer = redObject.AddComponent<SpriteRenderer>();
-    renderer.color = Color.red;
-    renderer.sortingOrder = 10; // 确保红色物体在其他物体前面渲染
-
-    // 创建一个更大的 Texture2D 来渲染红色物体
-    renderer.sprite = GenerateSprite((int)(objectHeight * 100), (int)(objectWidth * 100)); // 缩放因子为100
-
-    // 持续0.5秒后销毁红色物体
-    yield return new WaitForSeconds(0.5f);
-    Destroy(redObject);
-}
-
-// 创建一个更大的红色 Sprite
-private Sprite GenerateSprite(int width, int height)
-{
-    Texture2D texture = new Texture2D(width, height);
-
-    // 填充纹理为红色
-    Color[] colors = new Color[width * height];
-    for (int i = 0; i < colors.Length; i++)
-    {
-        colors[i] = Color.red;
-    }
-    texture.SetPixels(colors);
-    texture.Apply();
-
-    Rect rect = new Rect(0, 0, width, height);
-    Vector2 pivot = new Vector2(0.5f, 0.5f);
-
-    return Sprite.Create(texture, rect, pivot);
-}
 
     private IEnumerator GenerateRedLine(GameObject middleLine)
 {
@@ -224,11 +158,6 @@ private Sprite GenerateSprite(int width, int height)
     }
 
 
-    // 将碰撞盒的大小调整为与红线的长度和宽度匹配
-    Vector2 lineCenter = (middleStart + middleEnd) / 2f;
-    redLineObject.transform.position = lineCenter;
-    float lineLength = Vector3.Distance(middleStart, middleEnd);
-    collider.size = new Vector2(lineLength, targetWidth);
 
 
 
