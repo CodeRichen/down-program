@@ -28,6 +28,7 @@ public class man1 : MonoBehaviour
     public string Player;
     float hurtime;
     public int can;
+    public string RedObject;
     
     void Start()
     {
@@ -200,14 +201,16 @@ public class man1 : MonoBehaviour
             die();
             
         }
-         if (other.gameObject.name.Contains("RedLine"))  // 使用名称检查是否为红色物体
-        {
-            Modifyhp(-1);  // 碰到红色物体时减少hp
-        }
+         
     }
 
-
-
+    void OnTriggerEnter2D(Collider2D  other)
+{
+    if (other.gameObject.tag == "RedObject") 
+        {
+            Modifyhp(-1); 
+        }
+}
     public void Modifyhp(int num)
     {
         hp += num;
