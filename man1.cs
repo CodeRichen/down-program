@@ -29,7 +29,8 @@ public class man1 : MonoBehaviour
     float hurtime;
     public int can;
     public string RedObject;
-    
+    public int Fraction;
+    [SerializeField] Text FractionText;
     void Start()
     {
         can=1;
@@ -47,6 +48,7 @@ public class man1 : MonoBehaviour
 
     void Update()
     {
+        FractionText.text = "分數:"+Fraction.ToString() + "分";
         if (Input.GetKey(KeyCode.D))
         {
             transform.Translate(Rmove * Time.deltaTime, 0, 0);
@@ -216,15 +218,19 @@ public class man1 : MonoBehaviour
     public void Modifyhp(int num)
     {
         hp += num;
+        if (num>0){
+            Fraction+=1;
+        }
         if (hp > 20)
         {
             hp = 20;
+            Fraction+=4;
         }
         else if (hp < 1)
         {
             hp = 0;
             die();
-
+            Fraction-=10;
         }
         updatehp();
     }
@@ -292,19 +298,20 @@ public class man1 : MonoBehaviour
         replay.SetActive(true);
         back.SetActive(true);
         scoreText2.text = "本次紀錄\n地下" + score.ToString() + "層";
-        SaveScore(score);
+        SaveScore(Fraction);
         scoreText2.gameObject.SetActive(true);
         List<int> scores = LoadScores();
         scoreText3.text = ""; // 清空之前的文本
         for (int i = 0; i < scores.Count; i++)
         {
-            scoreText3.text += "第"+(i + 1) + "名: 地下" + scores[i] + "層\n";
+            scoreText3.text += "第"+(i + 1) + "名:" + scores[i] + "分\n";
         }
         scoreText3.gameObject.SetActive(true);
     }
 
     public void Replay()
     {
+        Fraction-=10;
         hp = 5;
         score=score-((score-1)%5);
         replay.SetActive(false);
