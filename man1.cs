@@ -12,6 +12,7 @@ using System;
 public class ScoreEntry
 {
     public int score;          // 分數
+     public int Fraction;          // 關卡
     public string date;        // 日期，以字符串格式存儲
 }
 
@@ -315,12 +316,12 @@ public class man1 : MonoBehaviour
     void die()
     {
         CFraction(-10);
-        SaveScore(Fraction);
+        SaveScore(score,Fraction);
         GetComponent<AudioSource>().Play();
         Time.timeScale = 0; // 遊戲速度
         replay.SetActive(true);
         back.SetActive(true);
-        scoreText2.text = "當下紀錄\n地下" + score.ToString() + "層\n"+ Fraction.ToString()+"分";
+        scoreText2.text = "地下" + score.ToString() + "層\n"+ Fraction.ToString()+"分";
         scoreText2.gameObject.SetActive(true);
          // 获取当前的分数条目
         
@@ -329,7 +330,25 @@ public class man1 : MonoBehaviour
         {
             ScoreEntry entry = scores[i];
              // 更新文本，包括分数和日期
-        scoreText3.text += "第" + (i + 1) + "名: " + entry.score + "分 " + entry.date + "\n";
+                 string colorTag = "";
+
+        // 根据名次设置颜色
+        switch (i)
+        {
+            case 0:
+                colorTag = "<color=#FFD700>"; // 金色
+                break;
+            case 1:
+                colorTag = "<color=#C0C0C0>"; // 银色
+                break;
+            case 2:
+                colorTag = "<color=#CD7F32>"; // 铜色
+                break;
+            default:
+                colorTag = "<color=#FFFFFF>"; // 白色（默认颜色）
+                break;
+        }
+        scoreText3.text += colorTag + entry.Fraction + "分(第"+entry.score+"層)" + entry.date + "\n" + "</color>";
         }
         scoreText3.gameObject.SetActive(true);
         
@@ -358,7 +377,7 @@ public class man1 : MonoBehaviour
     void CFraction(int Frac){
         Fraction+=Frac;
     }
-void SaveScore(int score)
+void SaveScore(int score,int Fraction)
     {
         List<ScoreEntry> scores = LoadScores();
 
@@ -366,17 +385,18 @@ void SaveScore(int score)
         ScoreEntry newEntry = new ScoreEntry
         {
             score = score,
-            date = DateTime.Now.ToString("yyyyMMddHHmm") // 設置日期格式
+            Fraction =Fraction,
+            date = DateTime.Now.ToString("MM/dd HH:mm") // 設置日期格式
         };
 
         // 添加新的分數條目並排序（根据分数降序）
         scores.Add(newEntry);
-        scores.Sort((a, b) => b.score.CompareTo(a.score)); // 根据分数降序排序
+        scores.Sort((a, b) => b.Fraction.CompareTo(a.Fraction)); // 根据分数降序排序
 
         // 只保留前三名
-        if (scores.Count > 3)
+        if (scores.Count > 10)
         {
-            scores.RemoveRange(3, scores.Count - 3);
+            scores.RemoveRange(10, scores.Count - 10);
         }
 
         // 将数据转换为JSON并保存到文件中
