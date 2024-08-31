@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using UnityEngine;
 public class RandomLineGenerator : MonoBehaviour
 {
     public float areaWidth = 8f;  // 区域宽度
@@ -13,9 +16,9 @@ public class RandomLineGenerator : MonoBehaviour
     private bool isGenerating = false; // 是否正在生成线条
     private Coroutine lineCoroutine; // 用于控制生成线条的协程
     private GameObject[] currentLines = new GameObject[1000]; 
-    private int a;
+    private int p;
     public man1 man2;
-
+    public string audioFileName = "a"; // 音频文件的名称（不带扩展名）
     void Start()
     {
         // 初始设置
@@ -23,7 +26,7 @@ public class RandomLineGenerator : MonoBehaviour
     
     public void StartGeneratingLines()
     {
-        a = 0;
+        p = 0;
         linesPerSecond = 1; 
         isGenerating = true;
         lineCoroutine = StartCoroutine(GenerateRandomLines());
@@ -60,7 +63,7 @@ public class RandomLineGenerator : MonoBehaviour
             }
 
             // 每3秒生成一次
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2.5f);
         }
     }
 
@@ -90,11 +93,11 @@ public class RandomLineGenerator : MonoBehaviour
         Vector3 endPoint2 = endPoint1 + offset;
 
         // 创建并设置第一条线
-        currentLines[a] = CreateLine(startPoint1, endPoint1);
-        a++;
+        currentLines[p] = CreateLine(startPoint1, endPoint1);
+        p++;
         // 创建并设置第二条线
-        currentLines[a] = CreateLine(startPoint2, endPoint2);
-        a++;
+        currentLines[p] = CreateLine(startPoint2, endPoint2);
+        p++;
         
         // 0.3秒后在两条线的中间生成一条线并删除之前的两条线
         StartCoroutine(GenerateMiddleLine(startPoint1, endPoint1, startPoint2, endPoint2));
@@ -135,6 +138,21 @@ private IEnumerator GenerateRedObject(GameObject middleLine)
     // 设置红色物体的位置在起点和终点的中间
     redObject.transform.position = (middleStart + middleEnd) / 2;
 
+    #if UNITY_EDITOR
+        // 使用 AssetDatabase 加载音频文件（仅限编辑器模式）
+        AudioClip audioClip = AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/{audioFileName}.MP3");
+        if (audioClip != null)
+        {
+             // 添加 AudioSource 组件到红色对象上
+            AudioSource audioSource = redObject.AddComponent<AudioSource>();
+            audioSource.clip = audioClip;
+            audioSource.playOnAwake = false; // 禁用自动播放
+        }
+        else
+        {
+            Debug.LogWarning($"未能加载音频文件 'Assets/Audio/{audioFileName}.wav'。请确保文件路径正确。");
+        }
+#endif
     // 添加 BoxCollider2D 组件
     BoxCollider2D collider = redObject.AddComponent<BoxCollider2D>();
     collider.isTrigger = true;  // 设置为触发器

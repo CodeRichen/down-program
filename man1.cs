@@ -126,7 +126,7 @@ public class man1 : MonoBehaviour
            Time.timeScale =  0.5f;
         }
         if(25+5==score){
-           Time.timeScale =  0.3f;
+           Time.timeScale =  0.4f;
         }
     }
 
