@@ -6,6 +6,20 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.EventSystems;
+using System;
+
+[System.Serializable]
+public class ScoreEntry
+{
+    public int score;          // 分數
+    public string date;        // 日期，以字符串格式存儲
+}
+
+[System.Serializable]
+public class ScoreData
+{
+    public List<ScoreEntry> scores;
+}
 public class man1 : MonoBehaviour
 {
     GameObject currentfloor;
@@ -31,6 +45,7 @@ public class man1 : MonoBehaviour
     public string RedObject;
     public int Fraction;
     [SerializeField] Text FractionText;
+    private List<ScoreEntry> scores; // 定义 scores 变量
     void Start()
     {
         can=1;
@@ -38,17 +53,19 @@ public class man1 : MonoBehaviour
         score = 1;
         scoretime = 0;
         timee = 2f;
+        Fraction=10;
         filePath = Path.Combine(Application.persistentDataPath, "scores.json");
         LoadScores();
         if (replay != null)
         {
             EventSystem.current.SetSelectedGameObject(replay);
         }
+        scores = LoadScores(); // 在 Start 或者其他合适的方法中初始化 scores
     }
 
     void Update()
     {
-        FractionText.text = "分數:"+Fraction.ToString() + "分";
+        FractionText.text = Fraction.ToString() ;
         if (Input.GetKey(KeyCode.D))
         {
             transform.Translate(Rmove * Time.deltaTime, 0, 0);
@@ -113,7 +130,8 @@ public class man1 : MonoBehaviour
             if (hurtime>3)
             {
                 hurtime=0;
-            int r = Random.Range(0, 2);
+            int r = UnityEngine.Random.Range(0, 2); 
+            //编译器不确定应该使用 UnityEngine.Random 还是 System.Random，因为这两个命名空间中都有 Random 类
             if (r==0){
                 StartCoroutine(MoveOverTime(objTransform,new Vector3(-0.5f, 0, 0), 1));}
             else {
@@ -197,6 +215,7 @@ public class man1 : MonoBehaviour
             GetComponent<Animator>().SetTrigger("hurt");
             Modifyhp(-1);
             other.gameObject.GetComponent<AudioSource>().Play();
+            CFraction(-5);
         }
         else if (other.gameObject.tag == "death")
         {
@@ -213,24 +232,25 @@ public class man1 : MonoBehaviour
             GetComponent<Animator>().SetTrigger("hurt");
             Modifyhp(-1); 
             other.gameObject.GetComponent<AudioSource>().Play();
+            CFraction(-15);
         }
 }
     public void Modifyhp(int num)
     {
         hp += num;
         if (num>0){
-            Fraction+=1;
+            CFraction(3);
         }
         if (hp > 20)
         {
             hp = 20;
-            Fraction+=4;
+            CFraction(5);
         }
         else if (hp < 1)
         {
             hp = 0;
             die();
-            Fraction-=10;
+            
         }
         updatehp();
     }
@@ -255,6 +275,7 @@ public class man1 : MonoBehaviour
         scoretime += Time.deltaTime;
         if (scoretime > 4f)
         {
+            CFraction(5);
             score++;
             scoretime = 0;
             scoreText.text = "地下" + score.ToString() + "層";
@@ -293,25 +314,30 @@ public class man1 : MonoBehaviour
 
     void die()
     {
+        CFraction(-10);
+        SaveScore(Fraction);
         GetComponent<AudioSource>().Play();
         Time.timeScale = 0; // 遊戲速度
         replay.SetActive(true);
         back.SetActive(true);
-        scoreText2.text = "本次紀錄\n地下" + score.ToString() + "層";
-        SaveScore(Fraction);
+        scoreText2.text = "當下紀錄\n地下" + score.ToString() + "層\n"+ Fraction.ToString()+"分";
         scoreText2.gameObject.SetActive(true);
-        List<int> scores = LoadScores();
+         // 获取当前的分数条目
+        
         scoreText3.text = ""; // 清空之前的文本
         for (int i = 0; i < scores.Count; i++)
         {
-            scoreText3.text += "第"+(i + 1) + "名:" + scores[i] + "分\n";
+            ScoreEntry entry = scores[i];
+             // 更新文本，包括分数和日期
+        scoreText3.text += "第" + (i + 1) + "名: " + entry.score + "分 " + entry.date + "\n";
         }
         scoreText3.gameObject.SetActive(true);
+        
     }
 
     public void Replay()
     {
-        Fraction-=10;
+        CFraction(-23);
         hp = 5;
         score=score-((score-1)%5);
         replay.SetActive(false);
@@ -329,15 +355,23 @@ public class man1 : MonoBehaviour
         StartCoroutine(LoopWithDelay(2, tims, ttims)); // 傳入所需參數
 
         }
-    
-
-    void SaveScore(int score)
+    void CFraction(int Frac){
+        Fraction+=Frac;
+    }
+void SaveScore(int score)
     {
-        List<int> scores = LoadScores();
+        List<ScoreEntry> scores = LoadScores();
 
-        // 添加新的分數並排序
-        scores.Add(score);
-        scores.Sort((a, b) => b.CompareTo(a)); // 降序排序
+        // 创建新的分數條目并添加当前日期
+        ScoreEntry newEntry = new ScoreEntry
+        {
+            score = score,
+            date = DateTime.Now.ToString("yyyyMMddHHmm") // 設置日期格式
+        };
+
+        // 添加新的分數條目並排序（根据分数降序）
+        scores.Add(newEntry);
+        scores.Sort((a, b) => b.score.CompareTo(a.score)); // 根据分数降序排序
 
         // 只保留前三名
         if (scores.Count > 3)
@@ -345,11 +379,12 @@ public class man1 : MonoBehaviour
             scores.RemoveRange(3, scores.Count - 3);
         }
 
+        // 将数据转换为JSON并保存到文件中
         string json = JsonUtility.ToJson(new ScoreData { scores = scores });
         File.WriteAllText(filePath, json);
     }
 
-    public List<int> LoadScores()
+    public List<ScoreEntry> LoadScores()
     {
         if (File.Exists(filePath))
         {
@@ -357,13 +392,7 @@ public class man1 : MonoBehaviour
             ScoreData scoreData = JsonUtility.FromJson<ScoreData>(json);
             return scoreData.scores;
         }
-        return new List<int>();
+        return new List<ScoreEntry>();
     }
-     
 }
 
-[System.Serializable]
-public class ScoreData
-{
-    public List<int> scores;
-}
